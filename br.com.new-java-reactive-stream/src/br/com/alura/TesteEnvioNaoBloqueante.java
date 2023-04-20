@@ -1,6 +1,7 @@
 package br.com.alura;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.SubmissionPublisher;
 
@@ -10,15 +11,21 @@ import br.com.alura.wsclient.NotaFiscalWSClient;
 public class TesteEnvioNaoBloqueante {
 
 	public static void main(String[] args) {
-		NotaFiscal primeiraNotaFiscal = new NotaFiscal("João", 39.99, LocalDate.now());
-		SubmissionPublisher<NotaFiscal> publisher = new SubmissionPublisher<>();
+		List<NotaFiscal> notasFiscais = List.of(new NotaFiscal("Joï¿½o", 39.99, LocalDate.now()),
+				new NotaFiscal("Renata", 41.20, LocalDate.now()), new NotaFiscal("Paulo", 32.10, LocalDate.now()),
+				new NotaFiscal("Fernanda", 15.00, LocalDate.now()));
 		NotaFiscalWSClient nfwsc = new NotaFiscalWSClient();
+		SubmissionPublisher<NotaFiscal> publisher = new SubmissionPublisher<>();
 		publisher.consume(nfwsc::enviar);
-		publisher.submit(primeiraNotaFiscal);
-		System.out.println("Você irá receber a nota fiscal no seu e-mail");
+		notasFiscais.forEach(nf -> {
+			publisher.submit(nf);
+		});
+		publisher.close();
+		System.out.println("Vocï¿½ irï¿½ receber a nota fiscal no seu e-mail");
 		Scanner scan = new Scanner(System.in);
 		scan.nextLine();
 		scan.close();
-		publisher.close();
+		System.out.println("Parabï¿½ns pela compra!!");
+		 
 	}
 }
